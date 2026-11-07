@@ -43,9 +43,12 @@ fi
 
 if [ "$KEYBOARD" = "yes" ]; then
   log "keyboard scenes through safaridriver"
+  # The on-screen keyboard only follows the hardware-keyboard setting once the Simulator app is open.
+  open -a Simulator --args -CurrentDeviceUDID "$UDID" -ConnectHardwareKeyboard 0 || log "could not open the Simulator app"
+  sleep 15
   safaridriver -p 4444 --diagnose > "$OUT/safaridriver.log" 2>&1 &
   SD=$!
-  sleep 3
+  sleep 10
   for attempt in 1 2; do
     if node run.mjs --driver safaridriver --profiles "$PROFILE" --cells scenes --only "scene-chat-composer,scene-manual-order,scene-copilot,scene-product-editor" --out "$OUT/keyboard" --port 4173; then
       log "keyboard scenes finished on attempt $attempt"; break
