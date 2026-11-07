@@ -26,6 +26,13 @@ xcrun simctl boot "$UDID"
 xcrun simctl bootstatus "$UDID" -b > /dev/null
 log "booted in $(( $(date +%s) - START ))s"
 
+# A fresh simulator is slow to start Safari the first time, so warm it up before timing anything.
+WARM=$(date +%s)
+xcrun simctl launch "$UDID" com.apple.mobilesafari > /dev/null || log "Safari warm-up launch failed"
+sleep 20
+log "Safari warmed up in $(( $(date +%s) - WARM ))s"
+xcrun simctl io "$UDID" screenshot --type=jpeg "$OUT/after-warmup.jpg" || true
+
 log "self-test"
 node run.mjs --driver simctl --profiles "$PROFILE" --cells selftest --out "$OUT/selftest" --port 4173
 if [ -n "$ONLY" ]; then EXTRA=(--only "$ONLY"); else EXTRA=(); fi

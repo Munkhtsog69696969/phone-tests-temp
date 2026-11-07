@@ -10,7 +10,7 @@ import { handleApi } from './fixtures/index.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const CELL_TIMEOUT_MS = 45000;
 const FIRST_CELL_TIMEOUT_MS = 150000;
-const START_RETRY_MS = 45000;
+const START_RETRY_MS = 200000;
 const START_RETRIES = 3;
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',

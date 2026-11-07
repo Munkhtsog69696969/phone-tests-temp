@@ -75,7 +75,8 @@ async function main() {
     });
     driverRef.d = await createDriver(profile);
     console.log(`[${id}] ${driverRef.d.label}: ${cells.length} cells`);
-    await driverRef.d.open(server.startUrl);
+    // A failed or slow first open isn't fatal: the server retries until the page arrives.
+    driverRef.d.open(server.startUrl).catch((e) => console.log(`[${id}] first open failed: ${e.message.split('\n')[0]}`));
     const { results, seconds, neverStarted } = await server.done;
     if (neverStarted) {
       await driverRef.d.capture(path.join(outDir, 'never-started')).catch(() => {});

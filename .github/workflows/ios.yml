@@ -45,6 +45,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Use the Xcode that matches this iOS version
+        run: |
+          ls -d /Applications/Xcode_*.app
+          case "${{ inputs.runtime }}" in
+            26.*) XC=$(ls -d /Applications/Xcode_26.*.app | grep -vE '\.0\.app$' | sort -V | tail -1) ;;
+            *)    XC=/Applications/Xcode_16.4.app ;;
+          esac
+          sudo xcode-select -s "$XC/Contents/Developer"
+          xcodebuild -version
       - name: Show what this runner offers
         run: |
           sw_vers

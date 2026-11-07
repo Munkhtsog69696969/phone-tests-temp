@@ -23,7 +23,7 @@ export async function createDriver(profile) {
     browserVersion: process.env.E2E_SIM_LABEL || null,
     async open(url) {
       const target = url.startsWith('http') ? url : `http://localhost:${profile.port}${url}`;
-      await run('xcrun', ['simctl', 'openurl', UDID(), target], { timeout: 60000 });
+      await run('xcrun', ['simctl', 'openurl', UDID(), target], { timeout: 180000 });
     },
     capture,
     async close() {},
