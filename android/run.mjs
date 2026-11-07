@@ -154,4 +154,5 @@ async function main() {
   }
 }
 
-main().catch((e) => { console.error(`[api${args.api}] STOP ${e.message}`); process.exit(2); });
+// Exit explicitly: the emulator's log pipe would otherwise keep this process alive.
+main().then(() => process.exit(0), (e) => { console.error(`[api${args.api}] STOP ${e.message}`); process.exit(2); });
