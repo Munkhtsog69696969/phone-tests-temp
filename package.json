@@ -1,0 +1,9 @@
+{
+  "name": "khaansoft-phone-tests",
+  "private": true,
+  "type": "module",
+  "description": "Free phone testing harness: fake API, self-driving page audit, Chrome/Android/iOS runners.",
+  "dependencies": {
+    "playwright-core": "1.58.2"
+  }
+}

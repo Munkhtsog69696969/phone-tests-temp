@@ -1,0 +1,63 @@
+name: iPhone Safari tests
+
+# Manual only. Standard runners are free on a public repo.
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: Mac runner
+        default: macos-15
+      profile:
+        description: Harness profile id
+        default: ios-17
+      device:
+        description: Simulator device name
+        default: iPhone 17
+      runtime:
+        description: iOS version
+        default: '26.2'
+      cells:
+        description: Cell groups
+        default: routes
+      only:
+        description: Only these cell ids (blank = all)
+        default: home,products,orders,conversations,settings
+      minutes:
+        description: Hard time limit
+        default: '12'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ inputs.profile }}-${{ inputs.runtime }}
+  cancel-in-progress: true
+
+jobs:
+  ios:
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: ${{ fromJSON(inputs.minutes) }}
+    env:
+      E2E_DIST: app-dist
+      E2E_BUILD: build.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Show what this runner offers
+        run: |
+          sw_vers
+          xcrun simctl list runtimes | grep iOS || true
+      - name: Enable Safari automation
+        run: sudo safaridriver --enable
+      - name: Run
+        run: bash ci/ios-run.sh "${{ inputs.profile }}" "${{ inputs.device }}" "${{ inputs.runtime }}" "${{ inputs.cells }}" "${{ inputs.only }}"
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-${{ inputs.profile }}-${{ inputs.runtime }}
+          path: out
+          retention-days: 7
+          if-no-files-found: warn
