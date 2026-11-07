@@ -1,0 +1,1 @@
+var e={product:{nameMax:200,skuMax:64,descriptionMax:1e4,priceMax:1e9},category:{nameMax:200,slugMax:120,descriptionMax:1e4,sortOrderMin:-1e5,sortOrderMax:1e5},document:{titleMax:300,contentMax:4e3,categoryMax:100},aiRule:{titleMax:200,contentMax:2e3,maxTotal:30,maxActive:8,maxActiveChars:4e3}};export{e as t};

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f1f5f9" />
+    <title>Khaan Soft — Offline</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; background: #f1f5f9; color: #0f172a; }
+      body { margin: 0; min-height: 100dvh; display: grid; place-items: center; }
+      main { max-width: 26rem; padding: 2rem; text-align: center; }
+      h1 { font-size: 1.5rem; } p { line-height: 1.6; }
+      button { margin-top: 1rem; min-height: 44px; border: 0; border-radius: .75rem; padding: .75rem 1.5rem; background: #1d4ed8; color: white; font: inherit; cursor: pointer; }
+      button:focus-visible { outline: 3px solid #60a5fa; outline-offset: 4px; }
+      @media (prefers-color-scheme: dark) { :root { background: #0a101c; color: #e2e8f0; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p translate="no">Khaan Soft</p>
+      <h1 id="title">You’re offline</h1>
+      <p id="message">Connect to the internet to access your workspace, orders and conversations.</p>
+      <button id="retry" type="button">Try again</button>
+    </main>
+    <script>
+      try {
+        if (localStorage.getItem('khaansoft_dashboard_language') === 'mn') {
+          document.documentElement.lang = 'mn';
+          document.getElementById('title').textContent = 'Интернэт холболтгүй байна';
+          document.getElementById('message').textContent = 'Ажлын талбар, захиалга, чатуудаа нээхийн тулд интернэтэд холбогдоно уу.';
+          document.getElementById('retry').textContent = 'Дахин оролдох';
+        }
+      } catch (error) { /* The English fallback works without storage. */ }
+      document.getElementById('retry').addEventListener('click', function () { location.reload(); });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-C_urxT9I.js";import{br as t}from"./index-DPDcYFIm.js";import n from"./Orders-D9phFQMc.js";var r=e();function i(){let{orderId:e}=t();return(0,r.jsx)(n,{pageOrderId:e??``})}export{i as default};

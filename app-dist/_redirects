@@ -1,0 +1,12 @@
+# Missing hashed assets (from stale cached index.html) return 404 instead of
+# the SPA index.html fallback. Otherwise the browser gets 200 text/html for
+# /assets/*.js and rejects it with "Failed to load module script: Expected a
+# JavaScript-or-Wasm module script but the server responded with a MIME type
+# of text/html."
+#
+# CF Pages serves existing static files BEFORE applying these rules, so real
+# /assets/* URLs keep working — this only kicks in on a genuine miss.
+/assets/*  /404  404
+
+# SPA routes fall back to index.html.
+/*  /index.html  200

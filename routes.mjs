@@ -81,6 +81,7 @@ export const SELFTEST = [
   st('thrown-error', { flag: ['errors'] }),
   st('double-scroll', { flag: ['doubleScroll'] }),
   st('wide-page', { flag: ['docOverflow'] }),
+  st('locked-dialog', { noFlag: ['doubleScroll'] }),
   st('clean', { noFlag: ['offEdge', 'clipped', 'docOverflow', 'tapFail', 'smallInput', 'behindNav', 'obscured', 'hoverHidden', 'errors', 'doubleScroll'] }),
   // The real app must also fail when something is really wrong.
   { id: 'negative-401', path: '/orders', expectPath: '/orders', forbid: PAGE_FORBID, mock: { me401: true }, kind: 'negative', expect: { invalid: true } },

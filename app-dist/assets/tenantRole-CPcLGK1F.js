@@ -1,0 +1,1 @@
+function e(e){return e===`OWNER`||e===`ADMIN`}export{e as t};

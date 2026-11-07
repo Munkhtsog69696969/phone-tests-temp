@@ -272,7 +272,11 @@
     result.hoverHidden = plain(hoverHidden);
 
     // Window and a large inner scroller both scrolling.
-    var windowScrolls = Math.max(root.scrollHeight, body ? body.scrollHeight : 0) > root.clientHeight + 1 && style(root).overflowY !== 'hidden';
+    // An open dialog locks the page with overflow:hidden on html or body, so the user can't scroll it.
+    var rootOverflow = style(root).overflowY;
+    var viewportOverflow = rootOverflow !== 'visible' ? rootOverflow : (body ? style(body).overflowY : 'visible');
+    var bodyFixed = body && style(body).position === 'fixed';
+    var windowScrolls = Math.max(root.scrollHeight, body ? body.scrollHeight : 0) > root.clientHeight + 1 && viewportOverflow !== 'hidden' && viewportOverflow !== 'clip' && !bodyFixed;
     var inner = verticalScrollers().filter(function (s) {
       var sr = s.getBoundingClientRect();
       return sr.height > 0.5 * h;

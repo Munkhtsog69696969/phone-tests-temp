@@ -1,0 +1,2 @@
+import{s as e}from"./formatDate-BCloV3kS.js";function t(e){return`"${(e==null?``:String(e)).replace(/"/g,`""`)}"`}function n(e,t){let n=new Blob([`\uFEFF${t.join(`
+`)}`],{type:`text/csv;charset=utf-8`}),r=URL.createObjectURL(n),i=document.createElement(`a`);i.href=r,i.download=e,document.body.appendChild(i),i.click(),i.remove(),URL.revokeObjectURL(r)}function r(){return e()}export{n,r,t};

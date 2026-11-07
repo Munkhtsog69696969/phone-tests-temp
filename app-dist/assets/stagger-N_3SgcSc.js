@@ -1,0 +1,1 @@
+function e(e){return{"--stagger-i":e}}export{e as t};

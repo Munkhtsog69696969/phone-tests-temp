@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-C_urxT9I.js";var t=e();function n({children:e,padding:n=`p-4 md:p-5`,className:r=``,style:i}){return(0,t.jsx)(`div`,{style:i,className:`bg-surface-container-lowest border border-outline-variant/15 rounded-lg shadow-sm min-w-0 max-w-full ${n} ${r}`,children:e})}export{n as t};

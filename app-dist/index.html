@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/pwa/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Khaan Soft" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Khaan Soft</title>
+    <meta name="description" content="Khaan Soft — Facebook, Instagram, Messenger борлуулалт, AI туслах, захиалга, төлбөрөө нэг дороос удирдана." />
+    <!--
+      Both schemes are declared so the browser paints its own chrome (address
+      bar, form controls, scrollbar gutters) to match whichever theme resolves.
+    -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f1f5f9" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a101c" />
+    <!--
+      Theme resolution BEFORE first paint. React applies `.dark` from an effect,
+      which runs after the browser has already painted, so a dark-mode tenant saw
+      a white flash on every single load. This must stay inline and synchronous —
+      an external or deferred script paints too late to help. It mirrors
+      contexts/ThemeContext.tsx; change both together.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('khaansoft-theme');
+          var dark = stored === 'dark'
+            || ((stored === 'system' || !stored)
+                && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+          // LanguageContext keeps documentElement.lang in sync once React is
+          // up; this just gets it right for the first paint, so assistive tech
+          // does not read the initial Mongolian screen with English rules.
+          var lang = localStorage.getItem('khaansoft_dashboard_language');
+          if (lang === 'mn' || lang === 'en') document.documentElement.lang = lang;
+        } catch (e) {
+          /* Private mode or blocked storage: fall through to the light default. */
+        }
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--
+      Inter (body, since 2026-10-30; was Geist) and Onest (headings/figures) are
+      both requested with their Cyrillic subsets — the interface copy is authored
+      in Mongolian, so a face without Cyrillic would silently fall back to a
+      system font for most of the text in the app.
+    -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Onest:wght@400..800&display=swap" rel="stylesheet">
+    <!--
+      Only the FILL axis is toggled per-icon in components/ui/Icon.tsx
+      (opsz/wght/GRAD are pinned to defaults 24/400/0). Requesting every
+      axis across every range downloads a 3.96MB variable font — pinning
+      to FILL@0..1 drops that to ~464KB, an 8.5x reduction. Icons are
+      hidden until the font arrives (display=block + Icon.tsx gate) so
+      shrinking the font is the biggest first-paint win for the sidebar.
+    -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&display=block" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-DPDcYFIm.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/jsx-runtime-C_urxT9I.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-D4MQ0pRX.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
