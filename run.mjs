@@ -76,7 +76,13 @@ async function main() {
     driverRef.d = await createDriver(profile);
     console.log(`[${id}] ${driverRef.d.label}: ${cells.length} cells`);
     await driverRef.d.open(server.startUrl);
-    const { results, seconds } = await server.done;
+    const { results, seconds, neverStarted } = await server.done;
+    if (neverStarted) {
+      await driverRef.d.capture(path.join(outDir, 'never-started')).catch(() => {});
+      await driverRef.d.close();
+      await server.close();
+      throw new Error(`NEVER_STARTED: the browser never opened the test page on ${id}`);
+    }
     const report = {
       profile, driver: args.driver, driverLabel: driverRef.d.label, browserVersion: driverRef.d.browserVersion || null,
       build: JSON.parse(fs.existsSync(BUILD_JSON) ? fs.readFileSync(BUILD_JSON, 'utf8') : '{}'),

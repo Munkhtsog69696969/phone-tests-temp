@@ -2,7 +2,7 @@
 // Creates a throwaway AVD, boots it headless, prepares Chrome, runs the self-test
 // and the requested profiles, then shuts it down. One emulator at a time.
 // Usage: node android/run.mjs --api 36 --profiles a36-320,a36-412 [--selftest-only] [--keep]
-import { execFile, spawn, execFileSync } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
 import fs from 'node:fs';
 import http from 'node:http';
 import os from 'node:os';
@@ -20,7 +20,6 @@ const { values: args } = parseArgs({
 });
 
 const SDK = process.env.ANDROID_SDK_ROOT || 'D:\\Android\\Sdk';
-const TOOLS = 'D:\\phone-tests\\tools\\cmdline-tools\\latest\\bin';
 const AVD_HOME = 'D:\\phone-tests\\avd';
 const ADB = path.join(SDK, 'platform-tools', 'adb.exe');
 const EMU = path.join(SDK, 'emulator', 'emulator.exe');
@@ -42,16 +41,20 @@ const log = (m) => console.log(`[api${args.api}] ${m}`);
 function ensureAvd() {
   fs.mkdirSync(AVD_HOME, { recursive: true });
   const dir = path.join(AVD_HOME, `${NAME}.avd`);
-  if (fs.existsSync(dir)) return dir;
+  if (fs.existsSync(path.join(dir, 'config.ini'))) return dir;
   log(`creating AVD ${NAME}`);
-  const bat = path.join(TOOLS, 'avdmanager.bat');
-  execFileSync('cmd', ['/c', bat, 'create', 'avd', '-n', NAME, '-k', spec.image, '-d', 'medium_phone', '--force'], { env, input: 'no\n', stdio: ['pipe', 'pipe', 'inherit'] });
-  const config = path.join(dir, 'config.ini');
-  let text = fs.readFileSync(config, 'utf8');
-  for (const [k, v] of [['hw.keyboard', 'no'], ['hw.ramSize', '2048'], ['hw.cpu.ncore', '2'], ['disk.dataPartition.size', '4G']]) {
-    text = new RegExp(`^${k}\\s*=`, 'm').test(text) ? text.replace(new RegExp(`^${k}\\s*=.*$`, 'm'), `${k}=${v}`) : `${text}\n${k}=${v}`;
-  }
-  fs.writeFileSync(config, text);
+  // Written directly: avdmanager can't see this SDK when run outside Android Studio.
+  const [, platform, tag, abi] = spec.image.split(';');
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(AVD_HOME, `${NAME}.ini`), `avd.ini.encoding=UTF-8\npath=${dir}\ntarget=${platform}\n`);
+  const playStore = tag === 'google_apis_playstore';
+  fs.writeFileSync(path.join(dir, 'config.ini'), [
+    `AvdId=${NAME}`, `avd.ini.displayname=${NAME}`, 'avd.ini.encoding=UTF-8',
+    `PlayStore.enabled=${playStore}`, `abi.type=${abi}`, `hw.cpu.arch=${abi}`, 'hw.cpu.ncore=2', 'hw.ramSize=2048', 'vm.heapSize=256',
+    'disk.dataPartition.size=4G', 'hw.keyboard=no', 'hw.lcd.density=420', 'hw.lcd.height=2400', 'hw.lcd.width=1080',
+    'hw.gpu.enabled=yes', 'hw.gpu.mode=swiftshader_indirect', 'hw.mainKeys=no', 'hw.trackBall=no', 'showDeviceFrame=no',
+    `image.sysdir.1=system-images\\${platform}\\${tag}\\${abi}\\`, `tag.id=${tag}`, `tag.display=${tag}`, '',
+  ].join('\n'));
   return dir;
 }
 

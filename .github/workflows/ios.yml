@@ -24,7 +24,7 @@ on:
         default: home,products,orders,conversations,settings
       minutes:
         description: Hard time limit
-        default: '12'
+        default: '20'
 
 permissions:
   contents: read

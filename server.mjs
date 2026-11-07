@@ -9,6 +9,9 @@ import { handleApi } from './fixtures/index.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const CELL_TIMEOUT_MS = 45000;
+const FIRST_CELL_TIMEOUT_MS = 150000;
+const START_RETRY_MS = 45000;
+const START_RETRIES = 3;
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.jpg': 'image/jpeg',
@@ -63,8 +66,28 @@ export function startServer({ dist: distArg, port = 4173, cells = [], profile, o
     log(`${String(results.length).padStart(3)}/${cells.length} ${current.cell.id} ${results[results.length - 1].valid ? 'valid' : 'INVALID ' + results[results.length - 1].invalidReasons.join('; ')}`);
   }
 
+  // Nothing arrived at all: the browser never opened the start page.
+  let openAttempts = 0;
+  let lastOpenAt = Date.now();
+  const startPath = `/__e2e/start?run=${Date.now()}`;
+
   const watchdog = setInterval(async () => {
-    if (!current || Date.now() - current.startedAt < CELL_TIMEOUT_MS) return;
+    if (index < 0) {
+      if (Date.now() - lastOpenAt < START_RETRY_MS || !driver?.open) return;
+      openAttempts += 1;
+      lastOpenAt = Date.now();
+      log(`browser never arrived, retry ${openAttempts}/${START_RETRIES}`);
+      if (openAttempts > START_RETRIES) {
+        finish({ results, seconds: Math.round((Date.now() - startedAt) / 1000), neverStarted: true });
+        return;
+      }
+      await driver.open(startPath).catch((e) => log(`open failed: ${e.message}`));
+      return;
+    }
+    if (!current) return;
+    // Safari's first launch on a fresh simulator is slow, so the first page gets longer.
+    const limit = index === 0 ? FIRST_CELL_TIMEOUT_MS : CELL_TIMEOUT_MS;
+    if (Date.now() - current.startedAt < limit) return;
     log(`timeout ${current.cell.id}`);
     closeCell({ timedOut: true });
     const next = beginCell(index + 1);
@@ -189,7 +212,7 @@ export function startServer({ dist: distArg, port = 4173, cells = [], profile, o
     server.listen(port, '127.0.0.1', () => resolve({
       port,
       done,
-      startUrl: `http://localhost:${port}/__e2e/start`,
+      startUrl: `http://localhost:${port}${startPath}`,
       pingCount: () => pings,
       close: () => { clearInterval(watchdog); server.closeAllConnections?.(); return new Promise((r) => server.close(r)); },
     }));

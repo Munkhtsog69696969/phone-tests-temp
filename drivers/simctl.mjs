@@ -16,6 +16,8 @@ export async function capture(fileBase) {
 }
 
 export async function createDriver(profile) {
+  // Start each batch from a fresh Safari, so the last batch's tab can't swallow the new URL.
+  await run('xcrun', ['simctl', 'terminate', UDID(), 'com.apple.mobilesafari'], { timeout: 30000 }).catch(() => {});
   return {
     label: `Safari in simulator: ${process.env.E2E_SIM_LABEL || profile.label}`,
     browserVersion: process.env.E2E_SIM_LABEL || null,
