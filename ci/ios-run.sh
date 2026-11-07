@@ -35,10 +35,13 @@ xcrun simctl io "$UDID" screenshot --type=jpeg "$OUT/after-warmup.jpg" || true
 
 log "self-test"
 node run.mjs --driver simctl --profiles "$PROFILE" --cells selftest --out "$OUT/selftest" --port 4173
-if [ -n "$ONLY" ] && [ "$ONLY" != "all" ]; then EXTRA=(--only "$ONLY"); else EXTRA=(); fi
 if [ "$CELLS" != "selftest" ]; then
   log "pages: $CELLS"
-  node run.mjs --driver simctl --profiles "$PROFILE" --cells "$CELLS" "${EXTRA[@]}" --out "$OUT/pages" --port 4173
+  if [ -n "$ONLY" ] && [ "$ONLY" != "all" ]; then
+    node run.mjs --driver simctl --profiles "$PROFILE" --cells "$CELLS" --only "$ONLY" --out "$OUT/pages" --port 4173
+  else
+    node run.mjs --driver simctl --profiles "$PROFILE" --cells "$CELLS" --out "$OUT/pages" --port 4173
+  fi
 fi
 
 if [ "$KEYBOARD" = "yes" ]; then
