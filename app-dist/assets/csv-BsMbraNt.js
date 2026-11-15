@@ -1,2 +1,0 @@
-import{s as e}from"./formatDate-DSn8ZQWh.js";var t=/^\s*[=+\-@]/,n=/^[+-]?\d[\d.,]*%?$/;function r(e){let r=e==null?``:String(e);return`"${(t.test(r)&&!n.test(r)?`'${r}`:r).replace(/"/g,`""`)}"`}function i(e,t){let n=new Blob([`\uFEFF${t.join(`
-`)}`],{type:`text/csv;charset=utf-8`}),r=URL.createObjectURL(n),i=document.createElement(`a`);i.href=r,i.download=e,document.body.appendChild(i),i.click(),i.remove(),URL.revokeObjectURL(r)}function a(){return e()}export{i as n,a as r,r as t};
