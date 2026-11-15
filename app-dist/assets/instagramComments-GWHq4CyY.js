@@ -1,0 +1,1 @@
+function e(e){return!!e?.some(e=>e.instagramCommentsEnabled===!0)}function t(e,t){return e===`facebook`||e===`instagram`&&t}export{e as n,t};

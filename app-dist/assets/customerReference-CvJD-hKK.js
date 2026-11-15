@@ -1,0 +1,1 @@
+function e(e){return e.trim().slice(-6)}function t(t,n,r){let i=t?.trim();if(i)return i;let a=n?e(n):``;return a?r(`Харилцагч #${a}`,`Customer #${a}`):r(`Нэргүй харилцагч`,`Unnamed customer`)}export{t};

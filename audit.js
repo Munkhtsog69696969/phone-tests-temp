@@ -320,9 +320,11 @@
     if (!document.fonts || !document.fonts.load) { S.fontsOk = false; return cb(); }
     var called = false;
     var finish = function (ok) { if (called) return; called = true; S.fontsOk = ok; cb(); };
+    // The body's own first font (Inter on older builds, Onest since 2026-11-07).
+    var bodyFont = (getComputedStyle(document.body).fontFamily || 'Onest').split(',')[0].trim();
     var once = function () {
       return Promise.all([
-        document.fonts.load('16px Inter', 'Өө Үү'),
+        document.fonts.load('16px ' + bodyFont, 'Өө Үү'),
         document.fonts.load('600 16px Onest', 'Өө Үү'),
         document.fonts.load('24px "Material Symbols Outlined"', 'home'),
       ]).then(function (lists) { return lists.every(function (l) { return l.length > 0; }); });

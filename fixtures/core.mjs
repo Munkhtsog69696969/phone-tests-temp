@@ -82,4 +82,6 @@ export const routes = [
   ['POST', /^\/api\/notifications\/read$/, () => null],
   ['GET', rx('/copilot/health'), () => ({ generatedAt: new Date().toISOString(), findings: [] })],
   ['GET', rx('/pages'), () => pages],
+  // Added for builds after 4d20d52: the gate for switching a Page's bot on (src/lib/auth.ts BotReadiness).
+  ['GET', rx('/bot-readiness'), () => ({ ready: true, activeDocuments: 5, requiredDocuments: 3 })],
 ];
