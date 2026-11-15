@@ -30,7 +30,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ios-${{ inputs.profile }}-${{ inputs.runtime }}
+  group: ios-${{ github.ref_name }}-${{ inputs.profile }}-${{ inputs.runtime }}
   cancel-in-progress: true
 
 jobs:
