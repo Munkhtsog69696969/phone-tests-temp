@@ -13,6 +13,8 @@ export const PROFILES = {
   p430: { label: '430×932 largest phones', width: 430, height: 932, dpr: 3, platform: 'android' },
   landscape: { label: '844×390 phone sideways', width: 844, height: 390, dpr: 3, platform: 'android' },
   dark390: { label: '390×844 dark theme', width: 390, height: 844, dpr: 3, platform: 'android', theme: 'dark' },
+  d1366: { label: '1366×768 laptop', width: 1366, height: 768, dpr: 1, platform: 'desktop' },
+  d1920: { label: '1920×1080 desktop', width: 1920, height: 1080, dpr: 1, platform: 'desktop' },
 
   // Tier 2: Android emulator. 640/320 = 2x, 1080/420 = 2.625x, 1170/480 = 3x.
   'a36-320': android('Android 16, 320 wide', 320, 568, '640x1136', 320),

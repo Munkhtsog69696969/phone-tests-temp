@@ -7,9 +7,12 @@ export async function createDriver(profile) {
     viewport: { width: profile.width, height: profile.height },
     screen: { width: profile.width, height: profile.height },
     deviceScaleFactor: profile.dpr || 2,
-    isMobile: true,
-    hasTouch: true,
-    userAgent: `Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${browser.version()} Mobile Safari/537.36`,
+    // Desktop profiles (added 2026-11-15 to prove phone fixes leave desktop untouched).
+    isMobile: profile.platform !== 'desktop',
+    hasTouch: profile.platform !== 'desktop',
+    userAgent: profile.platform === 'desktop'
+      ? `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${browser.version()} Safari/537.36`
+      : `Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${browser.version()} Mobile Safari/537.36`,
     colorScheme: profile.theme === 'dark' ? 'dark' : 'light',
     serviceWorkers: 'block',
   });
